@@ -1,7 +1,9 @@
 const express = require("express");
 const { randomBytes } = require("crypto");
-const app = express();
+const cors = require("cors");
 
+const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,5 +26,5 @@ app.post("/posts", (req, res) => {
 });
 
 app.listen(4000, () => {
-  console.log("Server is running on port 3000");
+  console.log("Server is running on port 4000");
 });
