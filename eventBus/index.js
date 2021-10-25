@@ -5,14 +5,26 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/events', (req, res, next) => {
+const events = [];
+
+app.post('/events', async (req, res, next) => {
   const event = req.body;
 
-  axios.post('http://localhost:4000/events', event);
-  axios.post('http://localhost:4001/events', event);
-  axios.post('http://localhost:4002/events', event);
+  events.push(event);
 
+  try {
+    await axios.post('http://localhost:4000/events', event); //post
+    await axios.post('http://localhost:4001/events', event); // comment
+    await axios.post('http://localhost:4002/events', event); //query
+    await axios.post('http://localhost:4003/events', event); // moderation
+  } catch (err) {
+    console.log(err.message);
+  }
   res.send({ status: 'OK' });
+});
+
+app.get('/events', (req, res) => {
+  res.send(events);
 });
 
 app.listen(4005, () => {
