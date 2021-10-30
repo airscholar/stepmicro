@@ -41,5 +41,6 @@ app.post('/events', (req, res, next) => {
 });
 
 app.listen(4000, () => {
+  console.log('v 2.0');
   console.log('Server is running on port 4000');
 });
