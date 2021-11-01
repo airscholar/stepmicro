@@ -11,27 +11,32 @@ app.use(express.urlencoded({ extended: true }));
 const posts = {};
 
 app.get('/posts', (req, res) => {
-  res.send(posts);
+  res.json(posts);
 });
 
-app.post('/posts', async (req, res) => {
+app.post('/posts/create', async (req, res) => {
   const id = randomBytes(4).toString('hex');
   const { title } = req.body;
 
   posts[id] = {
     id,
     title,
+    comments: [],
   };
 
-  await axios.post('http://localhost:4005/events', {
-    type: 'PostCreated',
-    data: {
-      id,
-      title,
-    },
-  });
-
-  res.status(201).send(posts[id]);
+  try {
+    axios.post('http://event-bus-srv:4005/events', {
+      type: 'PostCreated',
+      data: {
+        id,
+        title,
+        comments: [],
+      },
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+  res.status(201).json(posts[id]);
 });
 
 app.post('/events', (req, res, next) => {
@@ -41,6 +46,6 @@ app.post('/events', (req, res, next) => {
 });
 
 app.listen(4000, () => {
-  console.log('v 2.0');
+  console.log('v 3.0');
   console.log('Server is running on port 4000');
 });
